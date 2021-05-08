@@ -1,0 +1,39 @@
+{
+  "name": "github-project-board-automation",
+  "version": "0.0.1",
+  "description": "Automating the Github Project Board",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pritishvaidya/github-project-board-automation.git"
+  },
+  "keywords": [
+    "github-actions",
+    "github-projects-board",
+    "github-projects-board-automation",
+    "issues",
+    "pulls",
+    "pulls-commit",
+    "automation"
+  ],
+  "author": {
+    "name": "Pritish Vaidya",
+    "email": "pritishvaidya94@gmail.com",
+    "url": "pritishvaidya.com"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pritishvaidya/github-project-board-automation/issues"
+  },
+  "homepage": "https://github.com/pritishvaidya/github-project-board-automation#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.7",
+    "@actions/github": "^4.0.0"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.28.5"
+  }
+}
