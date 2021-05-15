@@ -25,7 +25,7 @@ const addProjectCard = ({
   projectColumnId,
 }: AddProjectCardInput): string => gql`
     mutation {
-        addProjectCard(input: {note: "test", projectColumnId: "${projectColumnId}"}) {
+        addProjectCard(input: {contentId: "${contentId}", projectColumnId: "${projectColumnId}"}) {
             clientMutationId
         }
     }
