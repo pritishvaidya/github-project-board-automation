@@ -36,7 +36,7 @@ export default (async () => {
       column,
     });
     info(
-      `Finished Graphql Mutations, created Project Card in project ${projectBoard}`
+      `Finished Graphql Mutations, action ${action} in the column ${column} and project ${projectBoard} has been successful`
     );
   } catch (error) {
     setFailed(error.message);
