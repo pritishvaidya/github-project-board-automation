@@ -1,0 +1,24 @@
+name: 'GitHub Project Board Automation'
+description: 'Github Project Board Automation'
+author: 'Pritish Vaidya <contact@pritishvaidya.dev>'
+inputs:
+  token:
+    description: 'The GITHUB_TOKEN secret can be passed in using {{ secrets.GITHUB_TOKEN }}'
+    required: true
+  project:
+    description: 'The name of the GitHub Project Board'
+    required: true
+  column:
+    description: 'The name of the column in the Github project board to perform an action'
+    required: true
+  action:
+    description: |
+      The type of action to be performed. Can be one of `update`, `archive` or `remove`.
+    required: false
+    default: "update"
+runs:
+  using: node12
+  main: 'dist/index.js'
+branding:
+  icon: 'settings'
+  color: 'gray-dark'
