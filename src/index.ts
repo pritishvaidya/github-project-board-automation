@@ -8,7 +8,7 @@ export default (async () => {
   try {
     info("Fetching Input");
     const token = getInput("token");
-    const projectBoard = getInput("project-board");
+    const projectBoard = getInput("project");
     const column = getInput("column");
     const action = getInput("action");
 
