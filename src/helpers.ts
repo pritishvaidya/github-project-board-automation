@@ -30,7 +30,7 @@ function extractBoardData({ context }: ExtractBoardDataType) {
   return {
     event,
     action: payload.action,
-    nodeId: getUrl({ payload, event })?.nodeId,
+    nodeId: getUrl({ payload, event })?.node_id,
     url: getUrl({ payload, event })?.html_url,
   };
 }
