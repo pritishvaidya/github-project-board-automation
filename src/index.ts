@@ -1,26 +1,43 @@
-import { getInput, setFailed } from "@actions/core";
+import { getInput, setFailed, debug, info } from "@actions/core";
 import { getOctokit, context } from "@actions/github";
+import getProjectBoardData from "./getProjectBoardData";
+import createProjectBoardMutations from "./createProjectBoardMutations";
 import { extractBoardData } from "./helpers";
-import { boardQuery } from "./queries";
 
 export default (async () => {
   try {
+    info("Fetching Input");
     const token = getInput("token");
-    const board = getInput("project-board");
+    const projectBoard = getInput("project-board");
     const column = getInput("column");
     const action = getInput("action");
 
-    // Get Project Board Data
-    const { url, event } = extractBoardData({ context });
-
-    // Generate Token
+    debug(
+      `Token: "***************************************", Board: ${projectBoard}, Column: ${column}, Action: ${action}`
+    );
     const octokit = getOctokit(token);
+    const { url, nodeId, event } = extractBoardData({ context });
 
-    // Get Resource from Query
-    const createProjectBoardQuery = boardQuery({ url, event });
-    const { resource } = await octokit.graphql(createProjectBoardQuery);
+    info("Fetching Project Board Data");
+    const resource = await getProjectBoardData({
+      url,
+      event,
+      octokit,
+      projectBoard,
+    });
 
-    console.log(resource);
+    info("Creating Graphql Mutations");
+    await createProjectBoardMutations({
+      octokit,
+      nodeId,
+      action,
+      resource,
+      projectBoard,
+      column,
+    });
+    info(
+      `Finished Graphql Mutations, created Project Card in project ${projectBoard}`
+    );
   } catch (error) {
     setFailed(error.message);
   }

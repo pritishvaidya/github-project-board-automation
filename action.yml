@@ -1,5 +1,5 @@
 name: 'GitHub Project Board Automation'
-description: 'Github Project Board Automation for Issues, Pull Requests and Labels'
+description: 'Github Project Board Automation'
 author: 'Pritish Vaidya <contact@pritishvaidya.dev>'
 inputs:
   token:
@@ -20,5 +20,5 @@ runs:
   using: node12
   main: 'dist/index.js'
 branding:
-  icon: 'cpu'
+  icon: 'settings'
   color: 'gray-dark'

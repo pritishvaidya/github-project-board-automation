@@ -1,43 +1,69 @@
-import type { BoardQuery } from "./types";
+/* @ts-expect-error: Fake Tag doesn't have types */
+import gql from "fake-tag";
+import type { ProjectBoardQuery } from "./types";
+import { EVENT_LIST } from "./constants";
 
-const projectCard = `
-  fragment projectFields on ProjectCard {
-    projectCards {
-      nodes {
-        id
-        isArchived
-        project {
-          name
-          id
-        }
-      }
-    }
-  }`;
-
-const boardQuery = ({ url, event }: BoardQuery): string => {
+const projectBoardQuery = ({
+  url,
+  event,
+  projectBoard,
+}: ProjectBoardQuery): string => {
   if (!event) {
-    throw new Error(`Unable to fetch event from Github Context`);
+    throw new Error("Unable to fetch event from Github Context");
   }
   if (!url) {
     throw new Error(
       `Unable to fetch Github Resource URL for the event ${event}`
     );
   }
-  return `query {
-        resource(url: "${url}") {
-        ... on PullRequest {
-          ...${projectCard}
+  return gql`query {
+    resource(url: "${url}") {
+    ... on ${EVENT_LIST.issues.includes(event) ? "Issue" : "PullRequest"} {
+      projectCards {
+        nodes {
+          id
+          isArchived
+          project {
+            name
+            id
+          }
         }
-        ... on Issue {
-          ...${projectCard}
+       }
+      repository {
+        projects(first: 10, search: "${projectBoard}", states: OPEN) {
+          nodes {
+             id
+             name
+             columns(first: 10) {
+               nodes {
+                 id
+                 name
+               }
+             }
+           }
+         }
+         owner {
+          ... on ProjectOwner {
+            id
+            projects(states: OPEN, search: "${projectBoard}", first: 10) {
+              nodes {
+                id
+                name
+                columns(first: 10) {
+                  nodes {
+                    id
+                    name
+                  }
+                }                
+              }
+            }
+          }
         }
-        ... on PullRequestCommit {
-          pullRequest {
-            ...${projectCard}
-        }
+       }
       }
     }
+  }
   `;
 };
 
-export { boardQuery };
+export { projectBoardQuery };

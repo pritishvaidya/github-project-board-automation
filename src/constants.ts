@@ -12,4 +12,10 @@ const EVENT_LIST = {
   },
 };
 
-export { EVENT_LIST };
+const ACTION_LIST = {
+  UPDATE: "update",
+  DELETE: "delete",
+  ARCHIVE: "archive",
+};
+
+export { EVENT_LIST, ACTION_LIST };
