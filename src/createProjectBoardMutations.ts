@@ -14,7 +14,7 @@ async function createProjectBoardMutations({
   octokit,
   action,
   resource,
-  projectBoard,
+  projects,
   column,
 }: CreateProjectBoardMutationsType) {
   if (!resource) {
@@ -34,19 +34,21 @@ async function createProjectBoardMutations({
   debug("Finding Projects with Matching Columns...");
   /* @ts-expect-error: Typings not defined correctly */
   const uniqueProjects = getUniqueProjects(projectNodes, ownerProjectNodes);
-  const projects = validateUniqueProjects(uniqueProjects, column, projectCards);
+  const validatedProjects = validateUniqueProjects(
+    uniqueProjects,
+    column,
+    projectCards
+  );
 
-  if (!projects.length) {
-    throw new Error(
-      `Unable to find Project ${projectBoard} or Column ${column}`
-    );
+  if (!validatedProjects.length) {
+    throw new Error(`Unable to find Project [${projects}] or Column ${column}`);
   }
 
   const mutations = [];
 
   debug(
     `Projects: ${JSON.stringify(
-      projects
+      validatedProjects
         .map(
           ({ id, name, column }) =>
             `{ id: ${id}, name: ${name}, columnId: ${column.id}, columnName: ${column.name} }`
@@ -55,7 +57,7 @@ async function createProjectBoardMutations({
     )}`
   );
 
-  for (const { card, previousCard, column } of projects) {
+  for (const { card, previousCard, column } of validatedProjects) {
     if (action === ACTION_LIST.DELETE && card.id) {
       mutations.push(deleteProjectCard({ cardId: card.id }));
     } else if (action === ACTION_LIST.ARCHIVE && card.id && !card.isArchived) {

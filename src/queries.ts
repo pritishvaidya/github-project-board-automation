@@ -3,10 +3,33 @@ import gql from "fake-tag";
 import type { ProjectBoardQuery } from "./types";
 import { EVENT_LIST } from "./constants";
 
+const projectBoardFragment = ({ projects }: { projects: Array<string> }) =>
+  projects.map(
+    (project: any, index: any) => gql`
+     project${index}: projects(states: OPEN, search: "${project}", first: 1) {
+       nodes {
+         id
+         name
+         columns(first: 10) {
+           nodes {
+             id
+             name
+             cards {
+               nodes {
+                 id
+               }
+             }
+           }
+         }   
+       }
+      }
+`
+  );
+
 const projectBoardQuery = ({
   url,
   event,
-  projectBoard,
+  projects,
 }: ProjectBoardQuery): string => {
   if (!event) {
     throw new Error("Unable to fetch event from Github Context");
@@ -30,43 +53,11 @@ const projectBoardQuery = ({
         }
        }
       repository {
-        projects(first: 10, search: "${projectBoard}", states: OPEN) {
-          nodes {
-             id
-             name
-             columns(first: 10) {
-               nodes {
-                 id
-                 name
-                 cards {
-                   nodes {
-                     id
-                   }
-                 }
-               }
-             }
-           }
-         }
+        ${projectBoardFragment({ projects })}
          owner {
           ... on ProjectOwner {
             id
-            projects(states: OPEN, search: "${projectBoard}", first: 10) {
-              nodes {
-                id
-                name
-                columns(first: 10) {
-                  nodes {
-                    id
-                    name
-                    cards {
-                      nodes {
-                        id
-                      }
-                    }
-                  }
-                }                
-              }
-            }
+            ${projectBoardFragment({ projects })}
           }
         }
        }
