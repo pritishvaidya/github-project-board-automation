@@ -26,6 +26,11 @@ const addProjectCard = ({
 }: AddProjectCardInput): string => gql`
     mutation {
         addProjectCard(input: {contentId: "${contentId}", projectColumnId: "${projectColumnId}"}) {
+            cardEdge {
+                node {
+                    id
+                }
+            }
             clientMutationId
         }
     }
@@ -34,9 +39,10 @@ const addProjectCard = ({
 const moveProjectCard = ({
   cardId,
   columnId,
+  afterCardId,
 }: MoveProjectCardInput): string => gql`
     mutation {
-        moveProjectCard(input: {cardId: "${cardId}", columnId: "${columnId}"}) {
+        moveProjectCard(input: {cardId: "${cardId}", columnId: "${columnId}", afterCardId : "${afterCardId}"}) {
             clientMutationId
         }
     }
