@@ -3,7 +3,9 @@ import { Context } from "@actions/github/lib/context";
 import { GitHub } from "@actions/github/lib/utils";
 import {
   Project,
+  ProjectCard,
   ProjectCardConnection,
+  ProjectColumn,
   ProjectConnection,
   ProjectOwner,
 } from "@octokit/graphql-schema/schema";
@@ -47,6 +49,15 @@ type CreateProjectBoardMutationsType = {
   column: string;
 };
 
+type ProjectCardCheckerType = {
+  card: Maybe<ProjectCard> | undefined;
+  column: Maybe<ProjectColumn> | undefined;
+};
+
+type LastProjectCardType = {
+  column: Maybe<ProjectColumn>;
+};
+
 export type {
   Maybe,
   Project,
@@ -56,4 +67,6 @@ export type {
   GetBoardURLType,
   GetProjectBoardType,
   CreateProjectBoardMutationsType,
+  ProjectCardCheckerType,
+  LastProjectCardType,
 };

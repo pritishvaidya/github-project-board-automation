@@ -55,23 +55,34 @@ async function createProjectBoardMutations({
     )}`
   );
 
-  for (const { card, column } of projects) {
+  for (const { card, previousCard, column } of projects) {
     if (action === ACTION_LIST.DELETE && card.id) {
       mutations.push(deleteProjectCard({ cardId: card.id }));
     } else if (action === ACTION_LIST.ARCHIVE && card.id && !card.isArchived) {
       mutations.push(
-        updateProjectCard({ projectCardId: "", isArchived: true })
+        updateProjectCard({ projectCardId: card.id, isArchived: true })
       );
     } else {
-      if (card.id) {
-        mutations.push(
-          moveProjectCard({ cardId: card.id, columnId: column.id })
-        );
-      } else {
-        mutations.push(
+      if (!card.id) {
+        const {
+          addProjectCard: {
+            cardEdge: {
+              node: { id },
+            },
+          },
+        } = await octokit.graphql(
           addProjectCard({ contentId, projectColumnId: column.id })
         );
+        card.id = id;
       }
+      mutations.push(
+        moveProjectCard({
+          // @ts-ignore
+          cardId: card.id,
+          columnId: column.id,
+          afterCardId: previousCard.id,
+        })
+      );
     }
   }
 

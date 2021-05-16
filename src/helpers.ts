@@ -2,6 +2,8 @@ import type {
   ProjectCardConnection,
   ExtractBoardDataType,
   GetBoardURLType,
+  ProjectCardCheckerType,
+  LastProjectCardType,
 } from "./types";
 import { EVENT_LIST } from "./constants";
 import { Project } from "./types";
@@ -52,6 +54,15 @@ function getUniqueProjects(
   return uniqify([...(projectNodes || []), ...ownerProjectNodes], "id");
 }
 
+function lastCardElement({ column }: LastProjectCardType) {
+  return column?.cards?.nodes?.slice(-1)[0];
+}
+
+function isLastElement({ card, column }: ProjectCardCheckerType) {
+  const lastCard = column?.cards?.nodes?.slice(-1)[0];
+  return lastCard && lastCard?.id === card?.id;
+}
+
 function validateUniqueProjects(
   projects: Array<Project>,
   column: string,
@@ -65,12 +76,14 @@ function validateUniqueProjects(
     const card = projectCards?.nodes?.find(
       (cardItem) => project.id === cardItem?.project.id
     );
-    if (columnItem) {
+    if (!!columnItem && !isLastElement({ card, column: columnItem })) {
       const { id, name } = project;
+      const lastCard = lastCardElement({ column: columnItem });
       return {
         id,
         name,
         column: columnItem,
+        previousCard: lastCard || { id: null },
         card: card ? { id: card.id, isArchived: card.isArchived } : {},
       };
     }

@@ -38,6 +38,11 @@ const projectBoardQuery = ({
                nodes {
                  id
                  name
+                 cards {
+                   nodes {
+                     id
+                   }
+                 }
                }
              }
            }
@@ -53,6 +58,11 @@ const projectBoardQuery = ({
                   nodes {
                     id
                     name
+                    cards {
+                      nodes {
+                        id
+                      }
+                    }
                   }
                 }                
               }
