@@ -8,12 +8,13 @@ export default (async () => {
   try {
     info("Fetching Input");
     const token = getInput("token");
-    const projectBoard = getInput("project");
+    const projectsInput = getInput("projects");
     const column = getInput("column");
     const action = getInput("action");
 
+    const projects = projectsInput.split(",");
     debug(
-      `Token: "***************************************", Board: ${projectBoard}, Column: ${column}, Action: ${action}`
+      `Token: "***************************************", Projects: [${projects}], Column: ${column}, Action: ${action}`
     );
     const octokit = getOctokit(token);
     const { url, nodeId, event } = extractBoardData({ context });
@@ -23,7 +24,7 @@ export default (async () => {
       url,
       event,
       octokit,
-      projectBoard,
+      projects,
     });
 
     info("Creating Graphql Mutations");
@@ -32,11 +33,11 @@ export default (async () => {
       nodeId,
       action,
       resource,
-      projectBoard,
+      projects,
       column,
     });
     info(
-      `Finished Graphql Mutations, action ${action} in the column ${column} and project ${projectBoard} has been successful`
+      `Finished Graphql Mutations, action ${action} in the column ${column} and projects [${projects}] has been successful`
     );
   } catch (error) {
     setFailed(error.message);

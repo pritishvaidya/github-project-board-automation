@@ -15,11 +15,30 @@ type Maybe<T> = T | null;
 type ProjectBoardQuery = {
   url: string | undefined;
   event: string;
-  projectBoard?: string;
+  projects: Array<string>;
 };
 
 type ExtractBoardDataType = {
   context: Context;
+};
+
+type FormatProjectBoardQueryType = {
+  resource: {
+    projectCards: ProjectCardConnection;
+    repository: {
+      projects: {
+        nodes: {
+          [index: string]: ProjectConnection;
+        };
+      };
+      owner: {
+        nodes: {
+          [index: string]: ProjectOwner;
+        };
+      };
+    };
+  };
+  projects: Array<string>;
 };
 
 type GetBoardURLType = {
@@ -31,21 +50,23 @@ type GetProjectBoardType = {
   octokit: InstanceType<typeof GitHub>;
   url: string;
   event: string;
-  projectBoard: string;
+  projects: Array<string>;
+};
+
+type ResourceType = {
+  projectCards: ProjectCardConnection;
+  repository: {
+    projects: ProjectConnection;
+    owner: ProjectOwner;
+  };
 };
 
 type CreateProjectBoardMutationsType = {
   octokit: InstanceType<typeof GitHub>;
   nodeId: string;
   action: string;
-  resource: {
-    projectCards: ProjectCardConnection;
-    repository: {
-      projects: ProjectConnection;
-      owner: ProjectOwner;
-    };
-  };
-  projectBoard: string;
+  resource: ResourceType;
+  projects: Array<string>;
   column: string;
 };
 
@@ -64,8 +85,10 @@ export type {
   ProjectCardConnection,
   ProjectBoardQuery,
   ExtractBoardDataType,
+  FormatProjectBoardQueryType,
   GetBoardURLType,
   GetProjectBoardType,
+  ResourceType,
   CreateProjectBoardMutationsType,
   ProjectCardCheckerType,
   LastProjectCardType,

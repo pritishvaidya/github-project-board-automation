@@ -1,9 +1,11 @@
 import type {
   ProjectCardConnection,
+  FormatProjectBoardQueryType,
   ExtractBoardDataType,
   GetBoardURLType,
-  ProjectCardCheckerType,
+  // ProjectCardCheckerType,
   LastProjectCardType,
+  ResourceType,
 } from "./types";
 import { EVENT_LIST } from "./constants";
 import { Project } from "./types";
@@ -37,6 +39,36 @@ function extractBoardData({ context }: ExtractBoardDataType) {
   };
 }
 
+function formatProjectQuery({
+  resource,
+  projects,
+}: FormatProjectBoardQueryType): ResourceType {
+  return {
+    ...resource,
+    repository: {
+      // @ts-expect-error
+      projects: {
+        nodes: projects
+          // @ts-expect-error
+          .map((_, index) => resource.repository[`project${index}`]?.nodes[0])
+          .filter(Boolean),
+      },
+      owner: {
+        // @ts-expect-error
+        projects: {
+          nodes: projects
+            .map(
+              (_, index) =>
+                // @ts-ignore
+                resource.repository.owner[`project${index}`]?.nodes[0]
+            )
+            .filter(Boolean),
+        },
+      },
+    },
+  };
+}
+
 function uniqify(array: Array<Project>, key: string): Array<Project> {
   /* @ts-expect-error */
   return array.reduce(
@@ -58,10 +90,10 @@ function lastCardElement({ column }: LastProjectCardType) {
   return column?.cards?.nodes?.slice(-1)[0];
 }
 
-function isLastElement({ card, column }: ProjectCardCheckerType) {
+/* function isLastElement({ card, column }: ProjectCardCheckerType) {
   const lastCard = column?.cards?.nodes?.slice(-1)[0];
   return lastCard && lastCard?.id === card?.id;
-}
+} */
 
 function validateUniqueProjects(
   projects: Array<Project>,
@@ -76,7 +108,7 @@ function validateUniqueProjects(
     const card = projectCards?.nodes?.find(
       (cardItem) => project.id === cardItem?.project.id
     );
-    if (!!columnItem && !isLastElement({ card, column: columnItem })) {
+    if (columnItem) {
       const { id, name } = project;
       const lastCard = lastCardElement({ column: columnItem });
       return {
@@ -91,4 +123,9 @@ function validateUniqueProjects(
   });
 }
 
-export { extractBoardData, getUniqueProjects, validateUniqueProjects };
+export {
+  extractBoardData,
+  formatProjectQuery,
+  getUniqueProjects,
+  validateUniqueProjects,
+};

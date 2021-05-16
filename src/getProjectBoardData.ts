@@ -1,19 +1,20 @@
 import { projectBoardQuery } from "./queries";
 import { GetProjectBoardType } from "./types";
+import { formatProjectQuery } from "./helpers";
 
 async function getProjectBoardData({
   octokit,
   url,
   event,
-  projectBoard,
+  projects,
 }: GetProjectBoardType) {
   const createProjectBoardQuery = projectBoardQuery({
     url,
     event,
-    projectBoard,
+    projects,
   });
   const { resource } = await octokit.graphql(createProjectBoardQuery);
-  return resource;
+  return formatProjectQuery({ resource, projects });
 }
 
 export default getProjectBoardData;

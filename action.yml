@@ -5,8 +5,8 @@ inputs:
   token:
     description: 'The GITHUB_TOKEN secret can be passed in using {{ secrets.GITHUB_TOKEN }}'
     required: true
-  project:
-    description: 'The name of the GitHub Project Board'
+  projects:
+    description: 'Comma separated values of Project Board'
     required: true
   column:
     description: 'The name of the column in the Github project board to perform an action'
