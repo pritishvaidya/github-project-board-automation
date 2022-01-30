@@ -14,6 +14,13 @@ async function getProjectBoardData({
     projects,
   });
   const { resource } = await octokit.graphql(createProjectBoardQuery);
+
+  if (!resource) {
+    throw new Error(
+      "You do not have sufficient permissions to access this repository"
+    );
+  }
+
   return formatProjectQuery({ resource, projects });
 }
 

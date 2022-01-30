@@ -1,12 +1,23 @@
 /* @ts-expect-error: Fake Tag doesn't have types */
 import gql from "fake-tag";
 import {
+  AddAssigneesToAssignableInput,
   AddProjectCardInput,
   AddProjectColumnInput,
   DeleteProjectCardInput,
   MoveProjectCardInput,
   UpdateProjectCardInput,
 } from "@octokit/graphql-schema";
+
+const addAssignees = ({
+  assigneeIds,
+  assignableId,
+}: AddAssigneesToAssignableInput): string => gql`
+    mutation {
+      addAssigneesToAssignable(input: {assigneeIds: "${assigneeIds}", assignableId: "${assignableId}"}) {
+        clientMutationId
+      }
+    }`;
 
 const addProjectColumn = ({
   name,
@@ -68,6 +79,7 @@ const updateProjectCard = ({
 `;
 
 export {
+  addAssignees,
   addProjectColumn,
   addProjectCard,
   moveProjectCard,

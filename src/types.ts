@@ -2,12 +2,14 @@ import { WebhookPayload } from "@actions/github/lib/interfaces";
 import { Context } from "@actions/github/lib/context";
 import { GitHub } from "@actions/github/lib/utils";
 import {
+  CommitAuthor,
   Project,
   ProjectCard,
   ProjectCardConnection,
   ProjectColumn,
   ProjectConnection,
   ProjectOwner,
+  AddAssigneesToAssignableInput,
 } from "@octokit/graphql-schema/schema";
 
 type Maybe<T> = T | null;
@@ -54,6 +56,7 @@ type GetProjectBoardType = {
 };
 
 type ResourceType = {
+  author: CommitAuthor;
   projectCards: ProjectCardConnection;
   repository: {
     projects: ProjectConnection;
@@ -92,4 +95,5 @@ export type {
   CreateProjectBoardMutationsType,
   ProjectCardCheckerType,
   LastProjectCardType,
+  AddAssigneesToAssignableInput,
 };

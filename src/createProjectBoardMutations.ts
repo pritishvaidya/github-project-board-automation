@@ -1,7 +1,11 @@
 import { debug } from "@actions/core";
-import { CreateProjectBoardMutationsType } from "./types";
+import {
+  CreateProjectBoardMutationsType,
+  AddAssigneesToAssignableInput,
+} from "./types";
 import { getUniqueProjects, validateUniqueProjects } from "./helpers";
 import {
+  addAssignees,
   addProjectCard,
   deleteProjectCard,
   moveProjectCard,
@@ -22,6 +26,7 @@ async function createProjectBoardMutations({
   }
 
   const {
+    author,
     projectCards,
     repository: {
       projects: { nodes: projectNodes },
@@ -46,6 +51,9 @@ async function createProjectBoardMutations({
 
   const mutations = [];
 
+  console.log({ author });
+
+  debug(`Author: { id: ${author.id} }`);
   debug(
     `Projects: ${JSON.stringify(
       validatedProjects
@@ -57,6 +65,12 @@ async function createProjectBoardMutations({
     )}`
   );
 
+  mutations.push(
+    addAssignees(<AddAssigneesToAssignableInput>{
+      assignableId: contentId,
+      assigneeIds: [author.id],
+    })
+  );
   for (const { card, previousCard, column } of validatedProjects) {
     if (action === ACTION_LIST.DELETE && card.id) {
       mutations.push(deleteProjectCard({ cardId: card.id }));

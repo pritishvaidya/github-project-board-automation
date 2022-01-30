@@ -42,6 +42,18 @@ const projectBoardQuery = ({
   return gql`query {
     resource(url: "${url}") {
     ... on ${EVENT_LIST.issues.includes(event) ? "Issue" : "PullRequest"} {
+      author {
+        ... on User {
+          id
+        }
+      }
+      assignees {
+        edges {
+          node {
+            id
+          }
+        }
+      }
       projectCards {
         nodes {
           id
