@@ -47,13 +47,6 @@ const projectBoardQuery = ({
           id
         }
       }
-      assignees {
-        edges {
-          node {
-            id
-          }
-        }
-      }
       projectCards {
         nodes {
           id
